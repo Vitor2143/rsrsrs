@@ -1,0 +1,352 @@
+/* ══ tokens ══════════════════════════════════════════════════════ */
+:root {
+  --sky-1:#f394c8; --sky-2:#f9aed6; --sky-3:#ffcbe8;
+  --sky-4:#ff9ccd; --sky-5:#ff6cb0; --sky-6:#ff4f9f;
+
+  --hill-far:#ff8ec5; --hill-near:#ff6cb2;
+  --shrub:#f02e8e; --shrub-dark:#c60a6c; --bloom:#ffd6ea;
+
+  --ink:#ff4f96; --ink-deep:#c4006b; --ink-glow:#ffb3d8;
+  --cream:#fff2f9;
+
+  --yes-1:#ff3c7d; --yes-2:#d9004f; --yes-edge:#9c0039;
+  --frame:#ff69ad;
+
+  --font:'Press Start 2P','Courier New',monospace;
+  --yes-scale:1;
+  --no-scale:1;
+
+  color-scheme: light;
+}
+
+/* ══ reset & stage ═══════════════════════════════════════════════ */
+*,*::before,*::after { box-sizing:border-box; }
+html,body { height:100%; }
+body {
+  margin:0;
+  font-family:var(--font);
+  color:var(--ink);
+  background:linear-gradient(180deg,
+    var(--sky-1) 0%, var(--sky-2) 26%, var(--sky-3) 50%,
+    var(--sky-4) 72%, var(--sky-5) 90%, var(--sky-6) 100%);
+  overflow:hidden;
+  -webkit-font-smoothing:none;
+  -webkit-tap-highlight-color:transparent;
+}
+/* The headline and the portrait are decoration; letting them be selected
+   just gets in the way of tapping around them. */
+.headline, .subline, .hint, .portrait { user-select:none; -webkit-user-select:none; }
+.sprite { width:100%; height:100%; display:block; }
+/* Quando existe um arquivo em assets/, ele entra aqui no lugar do sprite. */
+.sprite-slot { width:100%; height:100%; }
+.sprite-slot img {
+  width:100%; height:100%; display:block;
+  object-fit:contain; image-rendering:pixelated;
+}
+
+/* ══ background layers ═══════════════════════════════════════════ */
+.scene { position:fixed; inset:0; overflow:hidden; pointer-events:none; }
+.layer { position:absolute; inset:0; }
+
+.glow {
+  position:absolute; left:50%; top:34%;
+  width:min(120vw,900px); aspect-ratio:1; transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(255,214,238,0) 62%);
+}
+
+.cloud { position:absolute; animation:drift var(--drift,120s) linear infinite; }
+@keyframes drift { from { transform:translateX(-140%); } to { transform:translateX(760%); } }
+
+.hills { position:absolute; left:0; right:0; bottom:0; height:34%; }
+.hills::before, .hills::after {
+  content:''; position:absolute; left:-10%; right:-10%; bottom:0;
+  border-radius:50% 50% 0 0 / 100% 100% 0 0;
+}
+.hills::before { height:78%; background:var(--hill-far); transform:translateX(-14%); }
+.hills::after  { height:60%; background:var(--hill-near); transform:translateX(16%); }
+
+.skyline { position:absolute; left:0; right:0; }
+#skyline-far  { bottom:22%; height:15%; opacity:.85; }
+#skyline-near { bottom:11%; height:19%; }
+.skyline svg { width:100%; height:100%; display:block; }
+
+#shrubs { position:absolute; left:0; right:0; bottom:0; height:9%; }
+#shrubs svg { width:100%; height:100%; display:block; }
+
+/* drifting hearts / sparkles / butterflies */
+.drifter {
+  position:absolute; bottom:-8%;
+  width:var(--size); height:var(--size);
+  animation:rise var(--rise,24s) linear infinite;
+}
+.drifter svg { width:100%; height:100%; }
+.drifter--heart { color:#ff69ae; }
+.drifter--spark { color:#fff0f8; }
+.drifter--fly   { color:#e0158b; }
+@keyframes rise {
+  0%   { transform:translate(0,0) rotate(0deg); opacity:0; }
+  8%   { opacity:1; }
+  50%  { transform:translate(var(--sway),-52vh) rotate(12deg); }
+  88%  { opacity:1; }
+  100% { transform:translate(calc(var(--sway) * -1),-116vh) rotate(-10deg); opacity:0; }
+}
+
+/* ══ content ═════════════════════════════════════════════════════ */
+.stage {
+  position:relative; z-index:5;
+  min-height:100dvh; display:grid; place-items:center;
+  padding:clamp(16px,4vw,40px);
+}
+.screen {
+  display:none; flex-direction:column; align-items:center;
+  gap:clamp(14px,3.2vh,30px); text-align:center;
+  width:min(100%,720px);
+}
+.screen:focus { outline:none; }
+.screen.is-active { display:flex; animation:screen-in .5s cubic-bezier(.2,1.3,.4,1) both; }
+@keyframes screen-in {
+  from { opacity:0; transform:translateY(18px) scale(.94); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ── framed portrait ───────────────────────────────────────────── */
+.portrait {
+  position:relative;
+  width:clamp(120px,22vh,190px); aspect-ratio:1;
+  background:#150a12;
+  border:5px solid var(--cream);
+  border-radius:8px;
+  box-shadow:0 0 0 5px var(--frame), 0 12px 0 rgba(150,0,74,.28);
+  padding:10px;
+  animation:bob 3.6s ease-in-out infinite;
+}
+.portrait--wide { width:clamp(190px,42vh,300px); }
+.portrait--light { background:linear-gradient(180deg,#fff7fc,#ffe1f1); }
+@keyframes bob {
+  0%,100% { transform:translateY(0) rotate(-1deg); }
+  50%     { transform:translateY(-9px) rotate(1deg); }
+}
+.portrait .corner {
+  position:absolute; width:11px; height:10px; color:var(--frame);
+}
+.portrait .corner:nth-of-type(1) { top:-7px;  left:-7px; }
+.portrait .corner:nth-of-type(2) { top:-7px;  right:-7px; }
+.portrait .corner:nth-of-type(3) { bottom:-7px; left:-7px; }
+.portrait .corner:nth-of-type(4) { bottom:-7px; right:-7px; }
+.portrait .corner svg { width:100%; height:100%; }
+
+.portrait.shake { animation:shake .42s steps(2) 1; }
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  25% { transform:translateX(-7px) rotate(-3deg); }
+  75% { transform:translateX(7px) rotate(3deg); }
+}
+
+/* ── headline ──────────────────────────────────────────────────── */
+.headline {
+  margin:0;
+  font-size:clamp(19px,4.6vw,42px);
+  line-height:1.7;
+  letter-spacing:.04em;
+  color:var(--ink);
+  text-shadow:0 4px 0 var(--ink-deep), 0 0 26px rgba(255,120,185,.55);
+}
+.headline--huge { font-size:clamp(34px,9vw,76px); animation:pop-yay .7s cubic-bezier(.2,1.6,.4,1) both; }
+@keyframes pop-yay {
+  0%   { transform:scale(.3) rotate(-10deg); opacity:0; }
+  60%  { transform:scale(1.16) rotate(3deg); }
+  100% { transform:scale(1) rotate(0); opacity:1; }
+}
+.twinkle {
+  /* Sem espaco no HTML: um espaco monoespacado a 76px joga o brilho
+     pra longe do texto. A distancia vem daqui. */
+  display:inline-block; margin:0 .3em; font-size:.46em; vertical-align:middle;
+  color:var(--cream); text-shadow:0 3px 0 var(--ink-deep);
+  animation:twinkle 1.4s ease-in-out infinite;
+}
+.twinkle:last-of-type { animation-delay:.7s; }
+@keyframes twinkle {
+  0%,100% { transform:scale(1) rotate(0deg); opacity:1; }
+  50%     { transform:scale(.55) rotate(45deg); opacity:.6; }
+}
+
+.subline {
+  margin:0; font-size:clamp(10px,2.1vw,15px); line-height:1.9;
+  color:var(--ink-deep); text-shadow:0 2px 0 rgba(255,255,255,.5);
+}
+
+/* ── buttons ───────────────────────────────────────────────────── */
+.choices {
+  display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+  gap:clamp(14px,4vw,34px); min-height:96px; max-width:100%;
+}
+
+.btn {
+  font-family:var(--font); cursor:pointer;
+  border:0; border-radius:999px;
+  padding:.95em 1.5em;
+  /* On touch, a press-and-hold would otherwise select the label and pop
+     the selection handles instead of firing the button. */
+  user-select:none; -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  transition:transform .18s cubic-bezier(.25,1.4,.5,1),
+             font-size .3s cubic-bezier(.25,1.4,.5,1),
+             box-shadow .18s, opacity .2s;
+}
+.btn:focus-visible { outline:4px dashed var(--cream); outline-offset:6px; }
+
+.btn--yes {
+  font-size:calc(clamp(13px,2.6vw,20px) * var(--yes-scale));
+  color:#fff; letter-spacing:.06em;
+  background:linear-gradient(180deg,var(--yes-1),var(--yes-2));
+  box-shadow:0 0 0 4px var(--cream), 0 0 0 8px var(--frame),
+             0 7px 0 var(--yes-edge), 0 16px 30px rgba(160,0,70,.35);
+  text-shadow:0 2px 0 rgba(0,0,0,.28);
+  animation:thump 1.5s ease-in-out infinite;
+}
+@keyframes thump { 0%,100%{ transform:scale(1);} 42%{ transform:scale(1.06);} 58%{ transform:scale(1.02);} }
+.btn--yes:hover { animation:none; transform:scale(1.09) translateY(-3px); }
+.btn--yes:active { transform:scale(1.02) translateY(4px); box-shadow:0 0 0 4px var(--cream),0 0 0 8px var(--frame),0 2px 0 var(--yes-edge); }
+
+.btn--no {
+  position:relative;
+  font-size:calc(clamp(12px,2.3vw,17px) * var(--no-scale));
+  color:var(--ink);
+  background:var(--cream);
+  box-shadow:0 0 0 4px var(--frame), 0 6px 0 rgba(180,0,90,.35);
+  opacity:calc(.32 + var(--no-scale) * .68);
+}
+.btn--no:hover { transform:translateY(-2px); }
+.btn--no:active { transform:translateY(3px); box-shadow:0 0 0 4px var(--frame),0 2px 0 rgba(180,0,90,.35); }
+/* Once it starts running it leaves the flow entirely, so the rest of the
+   layout stops shuffling every time it bolts. */
+.btn--no.is-dodging {
+  position:fixed; left:0; top:0; z-index:12;
+  transition:transform .22s cubic-bezier(.3,1.5,.5,1), font-size .3s, opacity .2s;
+}
+
+.hint {
+  min-height:1.7em; margin:0;
+  font-size:clamp(10px,2vw,14px); line-height:1.8;
+  color:var(--ink-deep);
+  text-shadow:0 0 8px #fff, 0 0 4px #fff, 0 2px 0 rgba(255,255,255,.9);
+}
+.hint.is-new { animation:hint-in .34s cubic-bezier(.2,1.5,.4,1) both; }
+@keyframes hint-in {
+  from { opacity:0; transform:translateY(9px) scale(.9); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ── continue / replay ─────────────────────────────────────────── */
+.btn--ghost {
+  font-size:clamp(10px,2.1vw,15px);
+  color:var(--ink); background:transparent;
+  box-shadow:inset 0 0 0 4px var(--cream);
+  padding:1em 1.6em;
+  animation:nudge 1.9s ease-in-out infinite;
+}
+@keyframes nudge { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-6px);} }
+.btn--ghost:hover { color:#fff; background:var(--yes-1); animation:none; transform:translateY(-4px); }
+
+/* ── VITOR (coracao) ->  <- (coracao) CAROL ────────────────────
+   Os dois coracaozinhos se aproximam, se encontram no meio e viram
+   um so. Ciclo de 4.2s: todas as pecas compartilham a duracao pra
+   nunca sairem de sincronia. */
+.couple {
+  display:flex; align-items:center; justify-content:center;
+  gap:clamp(6px,2vw,18px); flex-wrap:nowrap;
+}
+.couple__name {
+  font-size:clamp(13px,3.4vw,26px); letter-spacing:.06em; color:var(--ink);
+  text-shadow:0 4px 0 var(--ink-deep), 0 0 22px rgba(255,120,185,.6);
+  animation:name-glow 4.2s ease-in-out infinite;
+}
+.couple__name:last-child { animation-delay:.12s; }
+@keyframes name-glow {
+  0%,44%  { transform:scale(1); }
+  56%     { transform:scale(1.12); }
+  70%,100%{ transform:scale(1); }
+}
+
+.couple__stage {
+  position:relative; display:block;
+  width:clamp(84px,20vw,140px); height:clamp(70px,16vw,110px);
+}
+.couple__stage > * {
+  position:absolute; left:50%; top:50%;
+  transform-origin:center;
+  animation-duration:4.2s; animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
+}
+.couple__mini { width:26%; margin:-13% 0 0 -13%; color:var(--yes-1); }
+.couple__big  { width:62%; margin:-31% 0 0 -31%; color:var(--yes-1); }
+.couple__mini svg, .couple__big svg { width:100%; height:auto; display:block; }
+
+.couple__mini--l { animation-name:mini-l; }
+.couple__mini--r { animation-name:mini-r; }
+.couple__big     { animation-name:merge; }
+
+@keyframes mini-l {
+  0%      { transform:translate(-190%,0) scale(.85); opacity:0; }
+  14%     { opacity:1; }
+  40%     { transform:translate(-45%,-14%) scale(1); opacity:1; }
+  47%     { transform:translate(0,0) scale(.5); opacity:0; }
+  100%    { transform:translate(-190%,0) scale(.85); opacity:0; }
+}
+@keyframes mini-r {
+  0%      { transform:translate(190%,0) scale(.85); opacity:0; }
+  14%     { opacity:1; }
+  40%     { transform:translate(45%,-14%) scale(1); opacity:1; }
+  47%     { transform:translate(0,0) scale(.5); opacity:0; }
+  100%    { transform:translate(190%,0) scale(.85); opacity:0; }
+}
+@keyframes merge {
+  0%,46%  { transform:scale(0); opacity:0; }
+  54%     { transform:scale(1.35); opacity:1; }
+  61%     { transform:scale(1); }
+  70%     { transform:scale(1.14); }
+  78%     { transform:scale(1); }
+  92%     { transform:scale(1); opacity:1; }
+  100%    { transform:scale(1.5); opacity:0; }
+}
+
+/* aro que estoura no instante do encontro */
+.couple__pop {
+  width:62%; aspect-ratio:1; margin:-31% 0 0 -31%;
+  border:4px solid var(--cream); border-radius:50%;
+  animation-name:pop;
+}
+@keyframes pop {
+  0%,47%  { transform:scale(.15); opacity:0; }
+  56%     { transform:scale(1); opacity:.85; }
+  74%,100%{ transform:scale(2.1); opacity:0; }
+}
+
+/* ── confetti canvas ───────────────────────────────────────────── */
+#confetti { position:fixed; inset:0; z-index:9; pointer-events:none; }
+
+/* ── sound toggle ──────────────────────────────────────────────── */
+.sound {
+  position:fixed; z-index:20; top:14px; right:14px;
+  width:44px; height:44px; padding:0;
+  font-size:15px; line-height:1; color:var(--ink);
+  background:var(--cream); border:0; border-radius:12px;
+  box-shadow:0 0 0 3px var(--frame), 0 4px 0 rgba(180,0,90,.3);
+  cursor:pointer;
+}
+.sound:hover { transform:translateY(-2px); }
+.sound[aria-pressed="false"] { opacity:.55; }
+
+.visually-hidden {
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;
+}
+
+/* ══ motion opt-out ══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:.01ms !important; animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+}

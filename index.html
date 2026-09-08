@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Quer sair comigo?</title>
+  <meta name="description" content="Uma perguntinha em pixel art com uma resposta so.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 6'><path d='M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z' fill='%23ff3d84'/></svg>">
+</head>
+<body>
+
+  <!-- cenario de fundo -->
+  <div class="scene" aria-hidden="true">
+    <div class="glow"></div>
+    <div class="layer" id="clouds-far"></div>
+    <div class="skyline" id="skyline-far"></div>
+    <div class="hills"></div>
+    <div class="layer" id="clouds-near"></div>
+    <div class="skyline" id="skyline-near"></div>
+    <div id="shrubs"></div>
+    <div class="layer" id="drifters"></div>
+  </div>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <button id="sound" class="sound" type="button" aria-pressed="true">
+    &#9834;<span class="visually-hidden">Ligar ou desligar o som</span>
+  </button>
+
+  <main class="stage">
+
+    <!-- 1 - a pergunta -->
+    <section class="screen" tabindex="-1" data-screen="ask">
+      <div class="portrait" id="ask-portrait" title="faz um carinho">
+        <span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span><span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span>
+        <span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span><span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span>
+        <div class="sprite-slot"></div>
+      </div>
+
+      <h1 class="headline">Voc&ecirc; quer<br>sair comigo?</h1>
+
+      <div class="choices">
+        <button id="yes" class="btn btn--yes" type="button">SIM&#10022;</button>
+        <button id="no" class="btn btn--no" type="button">N&atilde;o</button>
+      </div>
+
+      <p class="hint" id="hint" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- 2 - a comemoracao -->
+    <section class="screen" tabindex="-1" data-screen="yay">
+      <div class="portrait portrait--wide portrait--light" id="yay-portrait">
+        <span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span><span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span>
+        <span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span><span class="corner"><svg viewBox="0 0 7 6" shape-rendering="crispEdges"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z" fill="currentColor"/></svg></span>
+        <div class="sprite-slot"></div>
+      </div>
+
+      <h1 class="headline headline--huge">
+        <span class="twinkle">&#10022;</span>EBAAA!<span class="twinkle">&#10022;</span>
+      </h1>
+      <p class="subline">eu sabia que voc&ecirc; ia dizer sim :)</p>
+
+      <button id="continue" class="btn btn--ghost" type="button">APERTA PRA CONTINUAR &rarr;</button>
+    </section>
+
+    <!-- 3 - selado -->
+    <section class="screen" tabindex="-1" data-screen="date">
+      <div class="couple" aria-hidden="true">
+        <span class="couple__name">VITOR</span>
+        <span class="couple__stage">
+          <span class="couple__pop"></span>
+          <span class="couple__mini couple__mini--l"></span>
+          <span class="couple__mini couple__mini--r"></span>
+          <span class="couple__big"></span>
+        </span>
+        <span class="couple__name">CAROL</span>
+      </div>
+      <p class="visually-hidden">Vitor e Carol, oficialmente um casal.</p>
+
+      <h1 class="headline">T&Aacute; MARCADO!</h1>
+      <p class="subline">
+        sem volta atr&aacute;s, sem reembolso.<br>
+        te vejo em breve &#10084;
+      </p>
+
+      <button id="replay" class="btn btn--ghost" type="button">&larr; PERGUNTA DE NOVO</button>
+    </section>
+
+  </main>
+
+  <script src="js/sprite-data.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

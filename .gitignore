@@ -1,0 +1,14 @@
+# Stickers de terceiros ficam fora do repositorio de proposito: GitHub
+# Pages e hospedagem publica, e subir arte registrada pra la e
+# redistribuicao. Sem os arquivos, a pagina cai no pixel art sozinha.
+#
+# Se voce decidir publicar mesmo assim, e so apagar as 5 linhas abaixo.
+assets/*.gif
+assets/*.png
+assets/*.jpg
+assets/*.jpeg
+assets/*.webp
+
+Thumbs.db
+desktop.ini
+.DS_Store
